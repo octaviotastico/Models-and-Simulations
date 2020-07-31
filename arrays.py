@@ -36,12 +36,22 @@ def sigma(list):
 
 # Returns the variance and
 # the mean of a given list
-def sigma_mu(list):
+def sigma_and_mu(list):
   sigma = 0
   mean = mu(list)
   for elem in list:
     sigma += (elem - mean)**(2)
   return sigma / len(list), mean
+
+# Returns the variance of a sample
+def sigma_sample(list):
+  return (sigma(list) * len(n)) / (len(n) - 1)
+
+# Returns the variance of a sample
+# and the mean of a given list
+def sigma_sample_and_mu(list):
+  sigma, mu = sigma_and_mu(list)
+  return (sigma * len(n)) / (len(n) - 1), mu
 
 # Estimate mean using Montecarlo
 def estimate_mu(n, N, f):
