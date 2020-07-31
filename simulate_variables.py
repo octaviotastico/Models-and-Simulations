@@ -59,3 +59,28 @@ def binomial(n, p):
     F += prob
     k += 1
   return k
+
+# Given a new discrete variable,
+# and an array of it's probabilities,
+# choose one of them and return it.
+def discrete(x, p):
+  F, i = p[0], 0
+  u = np.random.uniform(0, 1)
+  while u > F:
+    F, i = F + p[i], i + 1
+  return x[i]
+
+# Generates a variable X from a distribution
+# we don't know how to generate a variable from,
+# using a variable Y from a distribution we do know
+# how to generate variables from.
+def accept_reject(p, pi, dist, *params):
+  while True:
+    Y = dist(*params)
+    u = np.random.uniform(0, 1)
+    print('Y es', Y)
+    if u < p[Y] / pi:
+      return Y
+
+# x, p = [1, 2, 3, 4, 5], [3/5, 1/5, 1/5, 0, 0]
+# accept_reject(p, 3/5, binomial, 4, 0.5)
