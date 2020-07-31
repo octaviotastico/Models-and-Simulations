@@ -1,4 +1,5 @@
 from simulate_variables import uniform
+import numpy as np
 
 # Returns a new array of length n made up
 # with elements taken from the given list.
@@ -34,7 +35,7 @@ def sigma(list):
   return sigma / len(list)
 
 # Returns the variance and
-# the mean of a given list.
+# the mean of a given list
 def sigma_mu(list):
   sigma = 0
   mean = mu(list)
@@ -45,7 +46,34 @@ def sigma_mu(list):
 # Estimate mean using Montecarlo
 def estimate_mu(n, N, f):
   mean = 0
-  while n:
+  for _ in range(n):
     u = uniform(0, N)
     mean += f(u)
   return (mean / n) * N
+
+# Estimates integral using Montecarlo
+# for integrals between 0 and 1
+def montecarlo_integral(f, n):
+  integral = 0
+  for _ in range(n):
+    u = np.random.uniform(0, 1)
+    integral += f(u)
+  return integral / n
+
+# Estimates integral using Montecarlo
+# for integrals between a and b
+def montecarlo_integral_a_b(f, n, a, b):
+  integral = 0
+  for _ in range(n):
+    u = np.random.uniform(0, 1)
+    integral += f(u * (b - a) + a)
+  return (integral * (b - a)) / n
+
+# Estimates integral using Montecarlo
+# for integrals between a and b
+def montecarlo_integral_0_inf(f, n):
+  integral = 0
+  for _ in range(n):
+    u = np.random.uniform(0, 1)
+    integral += f((1 / u) - 1) * (1/(u**2))
+  return integral / n
