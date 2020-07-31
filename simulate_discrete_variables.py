@@ -78,7 +78,6 @@ def accept_reject(p, pi, dist, *params):
   while True:
     Y = dist(*params)
     u = np.random.uniform(0, 1)
-    print('Y es', Y)
     if u < p[Y] / pi:
       return Y
 
