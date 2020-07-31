@@ -44,6 +44,17 @@ def normal_polar_method(mu, sigma):
   Y = radius_cuad**(1/2) * np.sin(theta)
   return X*sigma+mu, Y*sigma+mu
 
+# Generates a normal variable
+# using the Box Muller method
+def normal_box_muller(mu, sigma):
+  while True:
+    V1, V2 = 2*np.random.uniform(0, 1) - 1, 2*np.random.uniform(0, 1) - 1
+    S = V1 ** 2 + V2 ** 2
+    if S <= 1:
+      X = V1 * (-2 * np.log(S) / S)**(1/2)
+      Y = V2 * (-2 * np.log(S) / S)**(1/2)
+      return X*sigma+mu, Y*sigma+mu
+
 # Generates a variable X from a distribution
 # we don't know how to generate a variable from,
 # using a variable Y from a distribution we do know
@@ -54,3 +65,24 @@ def accept_reject(f, fi, dist, *params):
     u = np.random.uniform(0, 1)
     if u < f(Y) / fi:
       return Y
+
+# Simulates a poisson process until
+# it reaches a maximum allowed time
+def poisson_process_time(lamda, time):
+  t, events = 0, []
+  while t < time:
+    u = np.random.uniform(0, 1)
+    t += -np.log(u) / lamda
+    if t <= T:
+      events.append(t)
+    return events
+
+# Simulates a poisson proces until
+# it reaches a maximum number of events
+def poisson_process_events(lamda, events):
+  t, events = 0, []
+  for _ in range(events):
+    u = np.random.uniform(0, 1)
+    t += -np.log(u) / lamda
+    events.append(t)
+  return events
