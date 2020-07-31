@@ -11,7 +11,7 @@ def sub_array(list, n):
     new_list.append(list[pos])
   return new_list
 
-# Returns a permutation of the original array.
+# Returns a permutation of a list.
 def permutation(list):
   for i in range(len(list)):
     index = uniform(i, len(list) - 1)
