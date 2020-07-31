@@ -41,3 +41,11 @@ def sigma_mu(list):
   for elem in list:
     sigma += (elem - mean)**(2)
   return sigma / len(list), mean
+
+# Estimate mean using Montecarlo
+def estimate_mu(n, N, f):
+  mean = 0
+  while n:
+    u = uniform(0, N)
+    mean += f(u)
+  return (mean / n) * N
