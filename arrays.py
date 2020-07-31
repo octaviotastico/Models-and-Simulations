@@ -11,6 +11,13 @@ def sub_array(list, n):
     new_list.append(list[pos])
   return new_list
 
+# Returns a permutation of the original array.
+def permutation(list):
+  for i in range(len(list)):
+    index = uniform(i, len(list) - 1)
+    list[index], list[i] = list[i], list[index]
+  return list
+
 # Returns the average of a given list.
 def mu(list):
   mu = 0
