@@ -25,6 +25,10 @@ def mu(list):
     mu += elem
   return mu / len(list)
 
+# Calculates the average recursively.
+def recursive_mu(prev_average, xn, n):
+  return (prev_average * n + xn) / (n + 1)
+
 # Returns the variance of a given list.
 def sigma(list, sample=False):
   sigma = 0
@@ -32,6 +36,10 @@ def sigma(list, sample=False):
   for elem in list:
     sigma += (elem - mean)**(2)
   return sigma / (len(list) - 1) if sample else sigma / len(list)
+
+# Calculates the variance recursively.
+def recursive_sigma(prev_sigma, prev_average, average, n):
+  return 1 - (1 / n) * prev_sigma + (n + 1) * (prev_average * average)**2
 
 # Returns the variance and
 # the mean of a given list
@@ -79,9 +87,9 @@ def montecarlo_integral_0_inf(f, n):
 
 # Calculates the mean of a distibution
 # generating random values and updating it.
-# Stops at a given number of iterations, or when
-# the variance is smaller than some error we want.
-def sample_mean_and_variance(error, N, f, *params):
+# Stops when completing minimum number of iterations,
+# and when the variance is smaller than some error we want.
+def sample_mean_and_variance_error(error, N, f, *params):
   mean = f(*params)
   variance, n = 0, 1
   while n <= N or (variance/n)**(1/2) > error:
@@ -90,3 +98,41 @@ def sample_mean_and_variance(error, N, f, *params):
     mean += (f(*params) - mean) / n
     variance = variance * (1 - 1/(n-1)) + n * (mean - prev_mean)**2
   return mean, variance
+
+# Calculates the mean of a distibution
+# generating random values and updating it.
+# Stops when completing minimum number of iterations,
+# and interval is smaller than some length we want.
+def sample_mean_and_variance_length(z_alfa_2, L, N, f, *params):
+  mean = f(*params)
+  variance, n = 0, 1
+  length = L / (2 * z_alfa_2) # confianza (1-alfa)%
+  while n <= N or (variance/n)**(1/2) > length:
+    n += 1
+    prev_mean = mean
+    mean += (f(*params) - mean) / n
+    variance = variance * (1 - 1/(n-1)) + n * (mean - prev_mean)**2
+  return mean, variance
+
+# Calculates the mean of a distribution
+# using the bootstrap method.
+# Returns proportion of elements that
+# has their mean between a and b
+def bootstrap_mean(list, a, b, n):
+  mean, bootstrap_mu, p = mu(list), 0, 0
+  for _ in range(n):
+    bootstrap = sub_array(list, len(list))
+    actual_mu = mu(bootstrap)
+    bootstrap_mu += actual_mu
+    p += 1 if a <= (mean - actual_mu) <= b else 0
+  return bootstrap_mu / n, p
+
+# Calculates the variance of a distribution
+# using the bootstrap method.
+def bootstrap_variance(list, n):
+  mean, result = mu(list), 0
+  for _ in range(n):
+    bootstrap = sub_array(list, len(list))
+    bootstrap_mu = mu(bootstrap)
+    result += (mean - bootstrap_mu)**2
+  return result / n
