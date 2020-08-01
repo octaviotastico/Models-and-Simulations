@@ -1,4 +1,4 @@
-from simulate_variables import uniform
+from simulate_discrete_variables import uniform
 import numpy as np
 
 # Returns a new array of length n made up
@@ -136,3 +136,14 @@ def bootstrap_variance(list, n):
     bootstrap_mu = mu(bootstrap)
     result += (mean - bootstrap_mu)**2
   return result / n
+
+# Returns a map containing how many
+# times each element appears in a list
+def frequency(list):
+  m = {}
+  for elem in list:
+    if elem in m.keys():
+      m[elem] += 1
+    else:
+      m[elem] = 1
+  return m
