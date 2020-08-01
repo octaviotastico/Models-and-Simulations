@@ -8,7 +8,6 @@ def sub_array(list, n):
   new_list = []
   for i in range(n):
     pos = uniform(0, len(list) - 1)
-    print(pos)
     new_list.append(list[pos])
   return new_list
 
@@ -27,34 +26,24 @@ def mu(list):
   return mu / len(list)
 
 # Returns the variance of a given list.
-def sigma(list):
+def sigma(list, sample=False):
   sigma = 0
   mean = mu(list)
   for elem in list:
     sigma += (elem - mean)**(2)
-  return sigma / len(list)
+  return sigma / (len(list) - 1) if sample else sigma / len(list)
 
 # Returns the variance and
 # the mean of a given list
-def sigma_and_mu(list):
+def sigma_and_mu(list, sample=False):
   sigma = 0
   mean = mu(list)
   for elem in list:
     sigma += (elem - mean)**(2)
-  return sigma / len(list), mean
-
-# Returns the variance of a sample
-def sigma_sample(list):
-  return (sigma(list) * len(n)) / (len(n) - 1)
-
-# Returns the variance of a sample
-# and the mean of a given list
-def sigma_sample_and_mu(list):
-  sigma, mu = sigma_and_mu(list)
-  return (sigma * len(n)) / (len(n) - 1), mu
+  return sigma / (len(list) - 1) if sample else sigma / len(list), mean
 
 # Estimate mean using Montecarlo
-def estimate_mu(n, N, f):
+def montecarlo_mean(n, N, f):
   mean = 0
   for _ in range(n):
     u = uniform(0, N)
@@ -87,3 +76,17 @@ def montecarlo_integral_0_inf(f, n):
     u = np.random.uniform(0, 1)
     integral += f((1 / u) - 1) * (1/(u**2))
   return integral / n
+
+# Calculates the mean of a distibution
+# generating random values and updating it.
+# Stops at a given number of iterations, or when
+# the variance is smaller than some error we want.
+def sample_mean_and_variance(error, N, f, *params):
+  mean = f(*params)
+  variance, n = 0, 1
+  while n <= N or (variance/n)**(1/2) > error:
+    n += 1
+    prev_mean = mean
+    mean += (f(*params) - mean) / n
+    variance = variance * (1 - 1/(n-1)) + n * (mean - prev_mean)**2
+  return mean, variance
