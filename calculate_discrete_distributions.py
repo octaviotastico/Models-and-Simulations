@@ -1,5 +1,17 @@
 import math
 
+# returns P(X = x) for a bernoulli (binomial with n=1) distribution
+def bernoulli_PDF(p, x):
+  return p**x * (1 - p)**(1 - x)
+
+# returns P(X < x) for a bernoulli distribution
+# for P(X <= x) use x+1, and for P(X > x) use 1-(X <= x)
+def bernoulli_PDF(p, x):
+  summ = 0
+  for i in range(x):
+    summ += bernoulli_PDF(p, i)
+  return summ
+
 # returns P(X = x) for a binomial distribution
 def binomial_PDF(n, p, x):
   return math.comb(n, x) * p**x * (1 - p)**(n - x)
