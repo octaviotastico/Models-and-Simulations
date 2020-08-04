@@ -5,14 +5,14 @@ import numpy as np
 ########## Chi-squared Pearson's test ##########
 
 # Returns chi squared T statistic
-def chi_squared_statistic(x, p, s=None, N=None):
+def cs_statistic(x, p, s=None, N=None):
   N, T, n = frequency(s), 0, len(s)
   for i in range(len(x)):
     T += (((N[x[i]] if x[i] in N.keys() else 0) - n*p[i])**2) / (n*p[i])
   return T
 
 # Returns chi squared T statistic
-def chi_squared_statistic_agrupation(N, n, x, p):
+def cs_statistic_agrupation(N, n, x, p):
   T = 0
   for i in range(len(x)):
     T += (((N[x[i]] if x[i] in N.keys() else 0) - n*p[i])**2) / (n*p[i])
@@ -22,23 +22,16 @@ def chi_squared_statistic_agrupation(N, n, x, p):
 # test for a discrete random variable, using
 # the T statistic created by chi_squared_statistics
 # functions above. Should be equal to scipy.stats.chisquare
-def pearson_chi_squared_test(x, p, n, s=None, N=None):
+def pearson_chi_squared_test(x, p, n, s=None, N=None, unknown_params=0):
   # If p-value is very similar to alpha, CREATE new s's (samples), and call this function
   # multiple times. Count the proportion (how many) of the p-values are lower than alpha,
   # and take a new desition (for example, if 60% of pvals are lower, then reject it)
   if s:
-    T = chi_squared_statistic(x, p, s)
+    T = cs_statistic(x, p, s)
   else:
-    T = chi_squared_statistic_agrupation(N, n, x, p)
-  return T, dist.chi_square_CDF(len(x) - 1, T)
+    T = cs_statistic_agrupation(N, n, x, p)
+  return T, dist.chi_square_CDF(len(x) - 1 - unknown_params, T)
 
-# If we have any unknown parameter in our distribution,
-# we have to substract the amount of them in the
-# degrees of freedom on the chi squared cdf.
-def pearson_chi_squared_test_unknown_params(s, x, p, alpha, unknown_params, N=None, n=0, agrupation=False):
-  T = chi_squared_statistic_agrupation(N, n, x, p) if agrupation else chi_squared_statistic(x, p, s)
-  p_value = dist.chi_square_CDF(len(x) - 1 - unknown_params, T)
-  return p_value, p_value <= alpha
 
 ########## Kolmogorov-Smirnov Test ##########
 
@@ -50,7 +43,7 @@ def empirical_dist(x):
     Fe[elem] /= len(x)
   return np.insert(np.cumsum(list(Fe.values())), 0, 0, axis=0)
 
-def get_dks(s, Fe, dist, *params):
+def ks_statistic(s, Fe, dist, *params):
   s.sort()
   for i in range(len(s)):
     F = dist(*params, s[i])

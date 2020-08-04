@@ -13,7 +13,6 @@ def g7_ex1():
   # we dont have to create an array
   # s of length 564, so instead we
   # create directly the Ni's (frequencys)
-
   n = 564 # Total amount of samples
   x = [ 'white', 'pink', 'red' ]
   p = [ 1/4, 2/4, 1/4 ]
@@ -41,8 +40,8 @@ def g7_ex3_alt1():
 def g7_ex3_alt2():
   n = 10
   N = { 0.1: 1, 0.2: 2, 0.3: 1, 0.4: 2, 0.8: 3, 0.9: 1 }
-  x = [ 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9 ]
-  p = [ 1/9, 1/9, 1/9, 1/9, 1/9, 1/9, 1/9, 1/9, 1/9 ]
+  x = [ 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9 ] # DISCRETIZATION
+  p = [ 1/9, 1/9, 1/9, 1/9, 1/9, 1/9, 1/9, 1/9, 1/9 ] # Probability of each interval
   stat, pval = tests.pearson_chi_squared_test(x, p, n, N=N)
   print(f'G7 EX3 alternative 2 - Stat: {stat}, Pval: {pval}')
 
@@ -51,19 +50,22 @@ def g7_ex3_alt3():
   stat, pval = tests.kolmogorov_smirnov(s, 1000, cdist.uniform_CDF, 0, 1)
   print(f'G7 EX3 alternative 3 - Stat: {stat}, Pval: {pval}')
 
-g7_ex1()
-g7_ex2()
-g7_ex3_alt1()
-g7_ex3_alt2()
-g7_ex3_alt3()
+def g7_ex4():
+  s = [ 86, 133, 75, 22, 11, 144, 78, 122, 8, 146, 33, 41, 99 ]
+  stat, pval = tests.kolmogorov_smirnov(s, 100, cdist.exponential_CDF, 1/50)
+  print(f'G7 EX4 - Stat: {stat}, Pval: {pval}')
 
-def example_chi_1():
-  s = [1, 1, 1, 2, 3, 4, 5] # Muestra
-  x = [1, 2, 3, 4, 5] # Posibles X
-  p = [0.3, 0.1, 0.2, 0.1, 0.3] # Probabilidades de x
-  print(tests.chi_squared_statistic(x, p, s))
+def g7_ex5():
+  n = 18
+  s = [ 6, 7, 3, 4, 7, 3, 7, 2, 6, 3, 7, 8, 2, 1, 3, 5, 8, 7 ]
+  x = [ 1, 2, 3, 4, 5, 6, 7, 8 ]
+  estimated_p = np.sum(s)/(len(s)*8)
+  p = [ ddist.binomial_PDF(8, estimated_p, i) for i in range(8) ]
+  stat, pval = tests.pearson_chi_squared_test(x, p, n, s=s, unknown_params=1)
+  print(f'G7 EX5 - Stat: {stat}, Pval: {pval}')
 
-def example_chi_2():
+# Example 8.1, Cap 8, Page 3
+def example_8_1():
   s = [
     0, 0,
     1, 1, 1, 1, 1, 1, 1,
@@ -72,58 +74,57 @@ def example_chi_2():
     4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
     5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
     7, 7
-  ] # No importa el orden de los datos, solo que nos haya salido esto en el experimento.
-  x = [0, 1, 2, 3, 4, 5, 6, 7]
-  p = [
-    0.0078125, # Probabilidad de que salga un 0
-    0.0546875, # Probabilidad de que salga un 1
-    0.1640625, # Probabilidad de que salga un 2
-    0.2734375, # Probabilidad de que salga un 3
-    0.2734375, # Probabilidad de que salga un 4
-    0.1640625, # Probabilidad de que salga un 5
-    0.0546875, # Probabilidad de que salga un 6
-    0.0078125  # Probabilidad de que salga un 7
   ]
-  print(tests.pearson_chi_squared_test(x, p, len(s), s))
+  x = [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+  p = [ 0.0078125, 0.0546875, 0.1640625, 0.2734375, 0.2734375, 0.1640625, 0.0546875, 0.0078125 ]
+  stat, pval = tests.pearson_chi_squared_test(x, p, len(s), s)
+  print(f'Example 8.1, Cap. 8, Page 3 - Stat: {stat}, Pval: {pval}')
 
-# We don't know the mean
-# Example 8.2 page 138
-def example_chi_3():
-  x = [0, 1, 2, 3, 4, 5] # Where 5 actually a group with all values greater than 5.
-  s = [
-    0, 0, 0, 0, 0, 0,
-    1, 1,
-    2,
-    3, 3, 3, 3, 3, 3, 3, 3, 3,
-    4, 4, 4, 4, 4, 4, 4,
-    5, 5, 5, 5, 8
-  ] # Experimental data.
-  tetha = arr.mu(s) # Estimates Lambda, calculated by the experimental data.
+# Example 8.2, Cap 8, Page 6
+def example_8_2():
+  # H0 is: Data is from Poisson distribution
+  n = 30
+  # Where 5 is actually a group with all values greater than 5
+  x = [0, 1, 2, 3, 4, 5] # DISCRETIZATION
+  tetha = arr.mu(s) # Estimates Lambda, calculated by the experimental data
   p = [
     cdist.poisson_PDF(tetha, 0), # P(X = 0) ningun accidente
     cdist.poisson_PDF(tetha, 1), # P(X = 1) 1 accidente
     cdist.poisson_PDF(tetha, 2), # P(X = 2) 2 accidentes
     cdist.poisson_PDF(tetha, 3), # P(X = 3) 3 accidentes
     cdist.poisson_PDF(tetha, 4), # P(X = 4) 4 accidentes
-    1 - cdist.poisson_CDF(tetha, 5)
+    1 - cdist.poisson_CDF(tetha, 5) # P(X > 4) accidentes
   ]
   N = { 0: 6, 1: 2, 2: 1, 3: 9, 4: 7, 5: 5 }
-  # H0 is: Data is from Poisson distribution.
-  p = tests.pearson_chi_squared_test_unknown_params(s, x, p, 0.05, 1, N, 30, True)
-  print(p)
+  stat, pval = tests.pearson_chi_squared_test(x, p, n, N=N, unknown_params=1)
+  print(f'Example 8.2, Cap. 8, Page 6 - Stat: {stat}, Pval: {pval}')
 
-def example_kolsmir_1():
-  kolmogorov_smirnov(
-    [3, 1, 2, 5],
-    1000,
-    cdist.exponential_CDF,
-    1/3
-  )
+# Example 8.3, Cap 8, Page 11
+def example_8_3():
+  s = [55, 72, 81, 94, 112, 116, 124, 140, 145, 155]
+  kolmogorov_smirnov(s, 10000, cdist.exponential_CDF, 1/100)
+  print(f'Example 8.3, Cap. 8, Page 11 - Stat: {stat}, Pval: {pval}')
 
-def example_kolsmir_2():
-  kolmogorov_smirnov(
-    [55, 72, 81, 94, 112, 116, 124, 140, 145, 155],
-    10000,
-    cdist.exponential_CDF,
-    1/100
-  )
+g7_ex1()
+g7_ex2()
+g7_ex3_alt1()
+g7_ex3_alt2()
+g7_ex3_alt3()
+g7_ex4()
+g7_ex5()
+example_8_1()
+example_8_2()
+example_8_3()
+
+
+
+
+
+
+
+
+
+
+
+
+
