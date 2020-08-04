@@ -74,7 +74,7 @@ def g7_ex6():
 
 def g7_ex7():
   n = 10
-  s = [ ss.t.rvs(11) for i in range(n) ]
+  s = [ scvar.t_student(11) for i in range(n) ]
   stat, pval = tests.kolmogorov_smirnov(s, 100000, ss.norm.cdf)
   print(f'G7 EX7 - Stat: {stat}, Pval: {pval}')
 

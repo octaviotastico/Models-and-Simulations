@@ -1,4 +1,5 @@
 import numpy as np
+import random
 
 # Returns an exponential variable
 def exponential(lamda):
@@ -54,6 +55,13 @@ def normal_box_muller(mu, sigma):
       X = V1 * (-2 * np.log(S) / S)**(1/2)
       Y = V2 * (-2 * np.log(S) / S)**(1/2)
       return X*sigma+mu, Y*sigma+mu
+
+# Returns a random t-student variable
+# with 'df' degrees of freedom.
+def t_student(df):
+  x = random.gauss(0, 1)
+  y = 2.0 * random.gammavariate(0.5 * df, 2.0)
+  return x / ((y / df)**(1 / 2))
 
 # Generates a variable X from a distribution
 # we don't know how to generate a variable from,
