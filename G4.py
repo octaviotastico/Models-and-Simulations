@@ -86,11 +86,17 @@ def g4_ex5_urn(): # Urn method
   sim_x = sdvar.urn(px)
   print(f'G4 EX5 Urn Method - X Simulated: {sim_x + 1}')
 
-g4_ex1()
-g4_ex2()
-g4_ex3()
-g4_ex4_ar()
-g4_ex4_it()
-g4_ex5_ar()
-g4_ex5_it()
-g4_ex5_urn()
+def g4_ex6(): # Inverse Transform Method
+  px = [ ddist.binomial_PDF(10, 0.3, i) for i in range(10) ]
+  sim_x = sdvar.inverse_transform(px)
+  print(f'G4 EX5 Inverse Transform Method - X Simulated: {sim_x + 1}')
+
+# g4_ex1()
+# g4_ex2()
+# g4_ex3()
+# g4_ex4_ar()
+# g4_ex4_it()
+# g4_ex5_ar()
+# g4_ex5_it()
+# g4_ex5_urn()
+g4_ex6()

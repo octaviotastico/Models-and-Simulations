@@ -5,6 +5,7 @@ import simulate_continue_variables as scvar
 import arrays as arr
 import tests
 
+import scipy.stats as ss
 import numpy as np
 
 ### Guia 7
@@ -71,6 +72,12 @@ def g7_ex6():
   stat, pval = tests.kolmogorov_smirnov(s, 10000, cdist.exponential_CDF, 1)
   print(f'G7 EX6 - Stat: {stat}, Pval: {pval}')
 
+def g7_ex7():
+  n = 10
+  s = [ ss.t.rvs(11) for i in range(n) ]
+  stat, pval = tests.kolmogorov_smirnov(s, 100000, ss.norm.cdf)
+  print(f'G7 EX7 - Stat: {stat}, Pval: {pval}')
+
 # Example 8.1, Cap 8, Page 3
 def example_8_1():
   s = [
@@ -121,6 +128,7 @@ g7_ex3_alt3()
 g7_ex4()
 g7_ex5()
 g7_ex6()
+g7_ex7()
 example_8_1()
 example_8_2()
 example_8_3()
