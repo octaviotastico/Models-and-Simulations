@@ -72,7 +72,6 @@ def kolmogorov_smirnov(s, sims, dist, *params):
   for i in range(len(s)):
     F = dist(*params, s[i])
     d_original = max(Fe[i+1] - F, F - Fe[i], d_original)
-  print('K statistic', d_original)
   for i in range(sims):
     u = np.random.uniform(0, 1, size)
     u.sort()
@@ -81,8 +80,7 @@ def kolmogorov_smirnov(s, sims, dist, *params):
       d_i = max(Fe[i+1] - u[i], u[i] - Fe[i], d_i)
     if d_i >= d_original:
       p_value += 1
-  print('p-value', p_value/sims)
-  return p_value/sims
+  return d_original, p_value/sims
 
 # This function calculates the p-value of a sample s
 # in which we DONT KNOW some of its parameters.

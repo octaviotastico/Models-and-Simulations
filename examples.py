@@ -5,6 +5,8 @@ import simulate_continue_variables as scvar
 import arrays as arr
 import tests
 
+import numpy as np
+
 ### Guia 7
 def g7_ex1():
   # We already know the frequencys,
@@ -14,21 +16,46 @@ def g7_ex1():
 
   n = 564 # Total amount of samples
   x = [ 'white', 'pink', 'red' ]
-  N = { 'white': 141, 'pink': 291, 'red': 132 }
   p = [ 1/4, 2/4, 1/4 ]
+  N = { 'white': 141, 'pink': 291, 'red': 132 }
   stat, pval = tests.pearson_chi_squared_test(x, p, n, N=N)
-  print(f'Stat: {stat}, Pval: {pval}')
+  print(f'G7 EX1 - Stat: {stat}, Pval: {pval}')
 
 def g7_ex2():
   n = 1000
   x = [ 1, 2, 3, 4, 5, 6 ]
-  N = { 1: 158, 2: 172, 3: 164, 4: 181, 5: 160, 6: 165 }
   p = [ 1/6, 1/6, 1/6, 1/6, 1/6, 1/6 ]
+  N = { 1: 158, 2: 172, 3: 164, 4: 181, 5: 160, 6: 165 }
   stat, pval = tests.pearson_chi_squared_test(x, p, n, N=N)
-  print(f'Stat: {stat}, Pval: {pval}')
+  print(f'G7 EX2 - Stat: {stat}, Pval: {pval}')
+
+def g7_ex3_alt1():
+  n = 10
+  intervals = 100000 # DISCRETIZATION, More intervals = More precision
+  x = np.cumsum(np.full(intervals, 1))
+  p = np.full(intervals, 1/intervals)
+  s = [ 12, 18, 6, 33, 72, 83, 36, 27, 77, 74 ]
+  stat, pval = tests.pearson_chi_squared_test(x, p, n, s=s)
+  print(f'G7 EX3 alternative 1 - Stat: {stat}, Pval: {pval}')
+
+def g7_ex3_alt2():
+  n = 10
+  N = { 0.1: 1, 0.2: 2, 0.3: 1, 0.4: 2, 0.8: 3, 0.9: 1 }
+  x = [ 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9 ]
+  p = [ 1/9, 1/9, 1/9, 1/9, 1/9, 1/9, 1/9, 1/9, 1/9 ]
+  stat, pval = tests.pearson_chi_squared_test(x, p, n, N=N)
+  print(f'G7 EX3 alternative 2 - Stat: {stat}, Pval: {pval}')
+
+def g7_ex3_alt3():
+  s = [ 0.12, 0.18, 0.06, 0.33, 0.72, 0.83, 0.36, 0.27, 0.77, 0.74 ]
+  stat, pval = tests.kolmogorov_smirnov(s, 1000, cdist.uniform_CDF, 0, 1)
+  print(f'G7 EX3 alternative 3 - Stat: {stat}, Pval: {pval}')
 
 g7_ex1()
 g7_ex2()
+g7_ex3_alt1()
+g7_ex3_alt2()
+g7_ex3_alt3()
 
 def example_chi_1():
   s = [1, 1, 1, 2, 3, 4, 5] # Muestra
