@@ -59,22 +59,38 @@ def g4_ex3(): # Uniform sum
   print(f'Success average: {arr.mu(success)}')
   print(f'N > 15: {arr.proportion(success, 15, ">")}, N < 10: {arr.proportion(success, 10, "<")}')
 
-def g4_ex4(): # Accept Reject
+def g4_ex4_ar(): # Accept Reject Method
   px = [ 0.15, 0.20, 0.10, 0.35, 0.20 ]
   py = [ ddist.binomial_PDF(4, 0.45, i) for i in range(5) ]
-
   sim_x = sdvar.accept_reject(px, py, sdvar.binomial, 4, 0.45)
-  print(f'G4 EX4 - X Simulated: {sim_x}')
+  print(f'G4 EX4 Accept/Reject Method - X Simulated: {sim_x}')
 
-def g4_ex5(): # Accept Reject
+def g4_ex4_it(): # Inverse Transform Method
+  px = [ 0.15, 0.20, 0.10, 0.35, 0.20 ]
+  sim_x = sdvar.inverse_transform(px)
+  print(f'G4 EX4 Inverse Transform Method - X Simulated: {sim_x + 1}')
+
+def g4_ex5_ar(): # Accept Reject Method
   px = [ 0.11, 0.14, 0.09, 0.08, 0.12, 0.10, 0.09, 0.07, 0.11, 0.09 ]
   py = [ cdist.uniform_PDF(0, 100) for i in range(100) ]
-
   sim_x = sdvar.accept_reject(px, py, sdvar.uniform, 0, 9)
-  print(f'G4 EX5 - X Simulated: {sim_x}')
+  print(f'G4 EX5 Accept/Reject Method - X Simulated: {sim_x}')
+
+def g4_ex5_it(): # Inverse Transform Method
+  px = [ 0.11, 0.14, 0.09, 0.08, 0.12, 0.10, 0.09, 0.07, 0.11, 0.09 ]
+  sim_x = sdvar.inverse_transform(px)
+  print(f'G4 EX5 Inverse Transform Method - X Simulated: {sim_x + 1}')
+
+def g4_ex5_urn(): # Urn method
+  px = [ 0.11, 0.14, 0.09, 0.08, 0.12, 0.10, 0.09, 0.07, 0.11, 0.09 ]
+  sim_x = sdvar.urn(px)
+  print(f'G4 EX5 Urn Method - X Simulated: {sim_x + 1}')
 
 g4_ex1()
 g4_ex2()
 g4_ex3()
-g4_ex4()
-g4_ex5()
+g4_ex4_ar()
+g4_ex4_it()
+g4_ex5_ar()
+g4_ex5_it()
+g4_ex5_urn()

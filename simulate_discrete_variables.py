@@ -1,3 +1,4 @@
+import simulate_discrete_variables as sdvar
 import numpy as np
 
 # Returns an uniform variable
@@ -60,15 +61,18 @@ def binomial(n, p):
     k += 1
   return k
 
-# Given a new discrete variable,
-# and an array of it's probabilities,
+# Given an array of probabilities,
 # choose one of them and return it.
-def discrete(x, p):
+# Notice it returns index, not variable, so
+# you don't have to send the whole x's array.
+def inverse_transform(p, improved=True):
+  if improved:
+    p.sort(reverse=True)
   F, i = p[0], 0
   u = np.random.uniform(0, 1)
   while u > F:
     F, i = F + p[i], i + 1
-  return x[i]
+  return i
 
 # Generates a variable X from a distribution
 # we don't know how to generate a variable from,
@@ -88,3 +92,24 @@ def accept_reject(px, py, dist, *params):
     u = np.random.uniform(0, 1)
     if u < px[Y] / pi:
       return Y
+
+# Given an array of probabilities, this method
+# creates an array with k * px[i] positions
+# for every x[i] value such that k * p[i] is an
+# integer value.
+# Notice it returns index, not the variable, so
+# you don't have to send the whole x's array.
+def urn(px):
+  digits = 0
+  for p in px:
+    digits = max(len(str(p).split('.')[1]), digits)
+  digits = 10**digits
+
+  urn_array = []
+  for i in range(len(px)):
+    positions = int(digits * px[i])
+    for _ in range(positions):
+      urn_array.append(i)
+
+  pos = sdvar.uniform(0, digits - 1)
+  return urn_array[pos]
