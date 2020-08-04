@@ -74,12 +74,17 @@ def discrete(x, p):
 # we don't know how to generate a variable from,
 # using a variable Y from a distribution we do know
 # how to generate variables from.
-def accept_reject(p, pi, dist, *params):
+def accept_reject(px, py, dist, *params):
+  c, pi = 0, 0
+  for i in range(len(px)):
+    if px[i] / py[i] > c:
+      c = px[i] / py[i]
+      pi = px[i]
+  if c < 1: # magic check xD
+    c = 1.1 # magic assignment xD x2
+
   while True:
     Y = dist(*params)
     u = np.random.uniform(0, 1)
-    if u < p[Y] / pi:
+    if u < px[Y] / pi:
       return Y
-
-# x, p = [1, 2, 3, 4, 5], [3/5, 1/5, 1/5, 0, 0]
-# accept_reject(p, 3/5, binomial, 4, 0.5)

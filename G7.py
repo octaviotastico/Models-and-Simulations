@@ -8,6 +8,7 @@ import tests
 import numpy as np
 
 ### Guia 7
+
 def g7_ex1():
   # We already know the frequencys,
   # we dont have to create an array
@@ -59,10 +60,16 @@ def g7_ex5():
   n = 18
   s = [ 6, 7, 3, 4, 7, 3, 7, 2, 6, 3, 7, 8, 2, 1, 3, 5, 8, 7 ]
   x = [ 1, 2, 3, 4, 5, 6, 7, 8 ]
-  estimated_p = np.sum(s)/(len(s)*8)
+  estimated_p = arr.mu(s) / 8
   p = [ ddist.binomial_PDF(8, estimated_p, i) for i in range(8) ]
   stat, pval = tests.pearson_chi_squared_test(x, p, n, s=s, unknown_params=1)
   print(f'G7 EX5 - Stat: {stat}, Pval: {pval}')
+
+def g7_ex6():
+  n = 10
+  s = [ scvar.exponential(1) for _ in range(10) ]
+  stat, pval = tests.kolmogorov_smirnov(s, 10000, cdist.exponential_CDF, 1)
+  print(f'G7 EX6 - Stat: {stat}, Pval: {pval}')
 
 # Example 8.1, Cap 8, Page 3
 def example_8_1():
@@ -85,15 +92,16 @@ def example_8_2():
   # H0 is: Data is from Poisson distribution
   n = 30
   # Where 5 is actually a group with all values greater than 5
-  x = [0, 1, 2, 3, 4, 5] # DISCRETIZATION
+  x = [ 0, 1, 2, 3, 4, 5 ] # DISCRETIZATION
+  s = [ 0, 0, 0, 0, 0, 0, 1, 1, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 8 ]
   tetha = arr.mu(s) # Estimates Lambda, calculated by the experimental data
   p = [
-    cdist.poisson_PDF(tetha, 0), # P(X = 0) ningun accidente
-    cdist.poisson_PDF(tetha, 1), # P(X = 1) 1 accidente
-    cdist.poisson_PDF(tetha, 2), # P(X = 2) 2 accidentes
-    cdist.poisson_PDF(tetha, 3), # P(X = 3) 3 accidentes
-    cdist.poisson_PDF(tetha, 4), # P(X = 4) 4 accidentes
-    1 - cdist.poisson_CDF(tetha, 5) # P(X > 4) accidentes
+    ddist.poisson_PDF(tetha, 0), # P(X = 0) ningun accidente
+    ddist.poisson_PDF(tetha, 1), # P(X = 1) 1 accidente
+    ddist.poisson_PDF(tetha, 2), # P(X = 2) 2 accidentes
+    ddist.poisson_PDF(tetha, 3), # P(X = 3) 3 accidentes
+    ddist.poisson_PDF(tetha, 4), # P(X = 4) 4 accidentes
+    1 - ddist.poisson_CDF(tetha, 5) # P(X > 4) accidentes
   ]
   N = { 0: 6, 1: 2, 2: 1, 3: 9, 4: 7, 5: 5 }
   stat, pval = tests.pearson_chi_squared_test(x, p, n, N=N, unknown_params=1)
@@ -102,7 +110,7 @@ def example_8_2():
 # Example 8.3, Cap 8, Page 11
 def example_8_3():
   s = [55, 72, 81, 94, 112, 116, 124, 140, 145, 155]
-  kolmogorov_smirnov(s, 10000, cdist.exponential_CDF, 1/100)
+  stat, pval = tests.kolmogorov_smirnov(s, 10000, cdist.exponential_CDF, 1/100)
   print(f'Example 8.3, Cap. 8, Page 11 - Stat: {stat}, Pval: {pval}')
 
 g7_ex1()
@@ -112,6 +120,7 @@ g7_ex3_alt2()
 g7_ex3_alt3()
 g7_ex4()
 g7_ex5()
+g7_ex6()
 example_8_1()
 example_8_2()
 example_8_3()

@@ -50,6 +50,16 @@ def sigma_and_mu(list, sample=False):
     sigma += (elem - mean)**(2)
   return sigma / (len(list) - 1) if sample else sigma / len(list), mean
 
+def proportion(list, x, condition):
+  switch = {
+    '<':  [ i for i in list if i <  x ],
+    '<=': [ i for i in list if i <= x ],
+    '==': [ i for i in list if i == x ],
+    '>':  [ i for i in list if i >  x ],
+    '>=': [ i for i in list if i >= x ]
+  }
+  return len(switch[condition])
+
 # Estimate mean using Montecarlo
 def montecarlo_mean(n, N, f):
   mean = 0
