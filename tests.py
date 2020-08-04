@@ -1,12 +1,12 @@
 import calculate_continue_distributions as dist
-from arrays import frequency
+import arrays as arr
 import numpy as np
 
 ########## Chi-squared Pearson's test ##########
 
 # Returns chi squared T statistic
 def cs_statistic(x, p, s=None, N=None):
-  N, T, n = frequency(s), 0, len(s)
+  N, T, n = arr.frequency(s), 0, len(s)
   for i in range(len(x)):
     T += (((N[x[i]] if x[i] in N.keys() else 0) - n*p[i])**2) / (n*p[i])
   return T
@@ -38,16 +38,18 @@ def pearson_chi_squared_test(x, p, n, s=None, N=None, unknown_params=0):
 # Calculates the empirical distribution for some
 # array x of data taken from an experiment
 def empirical_dist(x):
-  Fe = frequency(x)
+  Fe = arr.frequency(x)
   for elem in Fe:
     Fe[elem] /= len(x)
   return np.insert(np.cumsum(list(Fe.values())), 0, 0, axis=0)
 
 def ks_statistic(s, Fe, dist, *params):
   s.sort()
+  stat = 0
   for i in range(len(s)):
     F = dist(*params, s[i])
-    d_original = max(Fe[i+1] - F, F - Fe[i], d_original)
+    stat = max(Fe[i+1] - F, F - Fe[i], stat)
+  return stat
 
 # This function calculates the p-value of a sample s
 # in which we already KNOW all its parameters.
@@ -61,10 +63,7 @@ def kolmogorov_smirnov(s, sims, dist, *params):
   d_original, p_value = 0, 0
   size = len(s)
   s = list(set(s))
-  s.sort()
-  for i in range(len(s)):
-    F = dist(*params, s[i])
-    d_original = max(Fe[i+1] - F, F - Fe[i], d_original)
+  d_original = ks_statistic(s, Fe, dist, *params)
   for i in range(sims):
     u = np.random.uniform(0, 1, size)
     u.sort()
@@ -75,20 +74,27 @@ def kolmogorov_smirnov(s, sims, dist, *params):
       p_value += 1
   return d_original, p_value/sims
 
-# This function calculates the p-value of a sample s
-# in which we DONT KNOW some of its parameters.
+def two_samples_recursive(n, m, r):
+  if (n and m) or (not n and not m):
+    if not n:
+      return two_samples_recursive(0, m - 1, r)
+    elif not m:
+      return two_samples_recursive(n - 1, 0, r)
+    else:
+      return (n * two_samples_recursive(n - 1, m, r - n - m) + m * two_samples_recursive(n, m - 1, r)) / (n + m)
+  elif n and not m:
+    if r < 1:
+      return 0
+    else:
+      return 1
+  else: # m and not n
+    if r < 0:
+      return 0
+    else:
+      return 1
 
-# Mucho viaje, probably wont do it, porque hacerlo para
-# un caso en especifico es re facil, y no se si vale la pena :/
-
-# def kolmogorov_smirnov_unknown_params(s, sims, alpha, dist, *params):
-#   size = len(s)
-#   p_val = kolmogorov_smirnov(s, sims, dist, *params)
-#   if p_val <= alpha:
-
-#     for i in range(sims):
-#       sample = []
-#       for i in range(size):
-#         sample.append(dist(params))
-#       unknown_params = get_unknown_params(dist, *params)
-
+def range_pvalue_test(l1, l2):
+  return 2 * min(
+    two_samples_recursive(len(l1), len(l2), arr.ranges(l1, l2)),
+    1 - two_samples_recursive(len(l1), len(l2), arr.ranges(l1, l2) - 1)
+  )

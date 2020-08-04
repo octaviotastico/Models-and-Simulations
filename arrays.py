@@ -157,3 +157,16 @@ def frequency(list):
     else:
       m[elem] = 1
   return m
+
+# Returns range of two lists
+def ranges(l1, l2, repeated=False):
+  l3 = sorted(l1 + l2)
+  range_l1 = 0
+  if repeated:
+    for x in l1:
+      range_l1 += (len(l3) - l3[::-1].index(x) + l3.index(x) + 1) / 2
+  else:
+    for x in l1:
+      range_l1 += l3.index(x) + 1
+
+  return range_l1
