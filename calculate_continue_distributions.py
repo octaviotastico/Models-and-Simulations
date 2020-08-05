@@ -35,6 +35,14 @@ def chi_square_PDF(k, x):
 def chi_square_CDF(k, x):
   return 1 - sp.gammainc(k/2, x/2)
 
+# Returns P(X = x) for a Weibull distribution
+def weibull_PDF(k, l, x):
+  return k/l * (x/l)**(k-1) * math.e**(-(x/l)**k)
+
+# returns P(X <= x) for a Weibull distribution
+def weibull_CDF(k, l, x):
+  return 1 - math.e**(-(x/l)**k)
+
 # Returns P(X = x) for a t-student distribution
 def t_student_PDF(v, m, s, x):
   left = math.gamma((v + 1) / 2) / (math.gamma(v / 2) * (math.pi * v) * s)
