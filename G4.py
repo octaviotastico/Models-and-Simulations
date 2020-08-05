@@ -86,10 +86,71 @@ def g4_ex5_urn(): # Urn method
   sim_x = sdvar.urn(px)
   print(f'G4 EX5 Urn Method - X Simulated: {sim_x + 1}')
 
-def g4_ex6(): # Inverse Transform Method
+def g4_ex6_it(): # Inverse Transform Method
   px = [ ddist.binomial_PDF(10, 0.3, i) for i in range(10) ]
   sim_x = sdvar.inverse_transform(px)
   print(f'G4 EX5 Inverse Transform Method - X Simulated: {sim_x + 1}')
+
+def g4_ex6_bernoulli(): # N Bernoulli Simulation
+  s = sdvar.n_bernoulli(10, 0.3)
+  print(f'G4 EX6 N-Bernoulli Simulation - X Simulated: {np.sum(s)}')
+
+def g4_ex7_it(): # Inverse Transform Method
+  success, sims = 0, 1000
+  px = [ ddist.poisson_PDF(0.7, i) for i in range(3) ] # Get P(x=0), P(x=1), P(x=2)
+  px += [ 1 - np.sum(px) ] # P(x>2) el resto
+  for _ in range(sims):
+    x = sdvar.inverse_transform(px)
+    if x > 2:
+      success += 1
+  print(f'G4 EX7 Transform Method - P(X > 2) = {success / sims}')
+
+def g4_ex7_proportion(): # Proportion - Equivalent?
+  success, sims = 0, 1000
+  for _ in range(sims):
+    Y = sdvar.poisson(0.7)
+    if Y > 2:
+      success += 1
+  print(f'G4 EX7 Using Proportion - P(X > 2) = {success / sims}')
+
+def g4_ex8(): # Inverse Transform Method
+  success, sims = 0, 1000
+
+  def f(l, k, x):
+    top = math.e**(-l) * (l**x / math.factorial(x))
+    bottom = 0
+    for i in range(k):
+      bottom += math.e**(-l) * (l**i / math.factorial(i))
+    return top / bottom
+
+  px = [ f(0.7, 10, i) for i in range(3) ] # Get P(x=0), P(x=1), P(x=2)
+  px += [ 1 - np.sum(px) ] # P(x>2) el resto
+  for _ in range(sims):
+    x = sdvar.inverse_transform(px)
+    if x > 2:
+      success += 1
+  print(f'G4 EX8 - P(X > 2) = {success / sims}')
+
+def g4_ex9(): # Composition of two Geometrics
+  geom_A = sdvar.geometric(1/2)
+  geom_B = sdvar.geometric(1/3)
+  print(f'G4 EX9 - X Simulated: {1/2 * geom_A + 1/2 * geom_B}')
+
+def g4_ex10_rit(): # Recursive Inverse Transform
+  p = 0.2
+  F, rec, i = p, p, 0
+  u = np.random.uniform(0, 1)
+  while u > F:
+    i += 1
+    rec *= (1 - p)
+    F += rec
+  print(f'G4 EX10 Inverse Transform Method - X Simulated: {i}')
+
+def g4_ex10_bernoulli(): # Recursive Inverse Transform
+  p, sim_x = 0.2, 0
+  while sdvar.bernoulli(p) == 0:
+    sim_x += 1
+  print(f'G4 EX10 Generating Bernoullis - X Simulated: {sim_x}')
 
 # g4_ex1()
 # g4_ex2()
@@ -99,4 +160,11 @@ def g4_ex6(): # Inverse Transform Method
 # g4_ex5_ar()
 # g4_ex5_it()
 # g4_ex5_urn()
-g4_ex6()
+# g4_ex6_it()
+# g4_ex6_bernoulli()
+# g4_ex7_it()
+# g4_ex7_proportion()
+# g4_ex8()
+# g4_ex9()
+# g4_ex10_rit()
+# g4_ex10_bernoulli()

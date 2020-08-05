@@ -71,7 +71,7 @@ def inverse_transform(p, improved=True):
   F, i = p[0], 0
   u = np.random.uniform(0, 1)
   while u > F:
-    F, i = F + p[i], i + 1
+    F, i = F + p[i + 1], i + 1
   return i
 
 # Generates a variable X from a distribution
