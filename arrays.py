@@ -35,7 +35,7 @@ def sigma(list, sample=False):
   mean = mu(list)
   for elem in list:
     sigma += (elem - mean)**(2)
-  return sigma / (len(list) - 1) if sample else sigma / len(list)
+  return sigma / (len(s) - (1 if sample else 0))
 
 # Calculates the variance recursively.
 def recursive_sigma(prev_sigma, prev_average, average, n):
@@ -43,12 +43,12 @@ def recursive_sigma(prev_sigma, prev_average, average, n):
 
 # Returns the variance and
 # the mean of a given list
-def sigma_and_mu(list, sample=False):
+def sigma_and_mu(s, sample=False):
   sigma = 0
-  mean = mu(list)
-  for elem in list:
+  mean = mu(s)
+  for elem in s:
     sigma += (elem - mean)**(2)
-  return sigma / (len(list) - 1) if sample else sigma / len(list), mean
+  return sigma / (len(s) - (1 if sample else 0)), mean
 
 def proportion(list, x, condition):
   switch = {
@@ -159,8 +159,11 @@ def frequency(list):
   return m
 
 # Returns range of two lists
-def ranges(l1, l2, repeated=False):
-  l3 = sorted(l1 + l2)
+def ranges(l1, l2, repeated=False, shuffle=True):
+  if shuffle:
+    l3 = permutation(l1 + l2)
+  else:
+    l3 = sorted(l1 + l2)
   range_l1 = 0
   if repeated:
     for x in l1:

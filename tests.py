@@ -74,14 +74,16 @@ def kolmogorov_smirnov(s, sims, dist, *params):
       p_value += 1
   return d_original, p_value/sims
 
-def two_samples_recursive(n, m, r):
+# Calculates the exact p-value of the hypothesis H0
+# "both samples come from the same distribution F"
+def two_samples_recursion(n, m, r):
   if (n and m) or (not n and not m):
     if not n:
-      return two_samples_recursive(0, m - 1, r)
+      return two_samples_recursion(0, m - 1, r)
     elif not m:
-      return two_samples_recursive(n - 1, 0, r)
+      return two_samples_recursion(n - 1, 0, r)
     else:
-      return (n * two_samples_recursive(n - 1, m, r - n - m) + m * two_samples_recursive(n, m - 1, r)) / (n + m)
+      return (n * two_samples_recursion(n - 1, m, r - n - m) + m * two_samples_recursion(n, m - 1, r)) / (n + m)
   elif n and not m:
     if r < 1:
       return 0
@@ -93,8 +95,27 @@ def two_samples_recursive(n, m, r):
     else:
       return 1
 
-def range_pvalue_test(l1, l2):
+def two_samples_recursive(l1, l2):
+  n, m, r = len(l1), len(l2), arr.ranges(l1, l2)
   return 2 * min(
-    two_samples_recursive(len(l1), len(l2), arr.ranges(l1, l2)),
-    1 - two_samples_recursive(len(l1), len(l2), arr.ranges(l1, l2) - 1)
+    two_samples_recursion(n, m, r),
+    1 - two_samples_recursion(n, m, r - 1)
   )
+
+def two_samples_normal(l1, l2):
+  n, m, r = len(l1), len(l2), arr.ranges(l1, l2)
+
+  r_star = (r - n * (n + m + 1) / 2) / ((n * m * (n + m + 1) / 12) ** (1 / 2))
+  if r <= n * ((n + m + 1) / 2):
+    return 2 * dist.normal_CDF(0, 1, r_star)
+  return 2 * (1 - dist.normal_CDF(0, 1, r_star))
+
+def two_samples_simulated(l1, l2, sims):
+  p1, p2, r = 0, 0, arr.ranges(l1, l2)
+  for _ in range(sims):
+    s = arr.ranges(l1, l2, shuffle=True)
+    if s < r:
+      p1 += 1
+    else:
+      p2 += 1
+  return 2 * min(p1, p2) / sims

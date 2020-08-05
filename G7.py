@@ -5,7 +5,6 @@ import simulate_continue_variables as scvar
 import arrays as arr
 import tests
 
-import scipy.stats as ss
 import numpy as np
 
 ### Guia 7
@@ -75,10 +74,10 @@ def g7_ex6(): # Kolmogorov-Smirnov Test
 def g7_ex7(): # Kolmogorov-Smirnov Test
   n = 10
   s = [ scvar.t_student(11) for i in range(n) ]
-  stat, pval = tests.kolmogorov_smirnov(s, 100000, ss.norm.cdf)
+  stat, pval = tests.kolmogorov_smirnov(s, 100000, cdist.normal_CDF, 0, 1)
   print(f'G7 EX7 - Stat: {stat}, Pval: {pval}')
 
-def g7_ex8(): # Kolmogorov-Smirnov Test
+def g7_ex8(): # Kolmogorov-Smirnov Test Unknown Parameters
   sims, n = 100000, 15
   s = [ 1.6, 10.3, 3.5, 13.5, 18.4, 7.7, 24.3, 10.7, 8.4, 4.9, 7.9, 12, 16.2, 6.8, 14.7 ]
   estimated_lamda = arr.mu(s)
@@ -97,11 +96,36 @@ def g7_ex8(): # Kolmogorov-Smirnov Test
 
   print(f'New pvalue calculated with {sims} new samples - Pval: {new_pval/sims}')
 
-def g7_ex10(): # P-Value Range Tests
+def g7_ex9(): # Kolmogorov-Smirnov Test Unknown Parameters
+  sims, n = 3, 12
+  s = [ 91.9, 97.8, 111.4, 122.3, 105.4, 95.0, 103.8, 99.6, 96.6, 119.3, 104.8, 101.7 ]
+  est_sigma, est_mu = arr.sigma_and_mu(s)
+  stat, pval = tests.kolmogorov_smirnov(s, sims, cdist.normal_CDF, est_mu, est_sigma**(1/2))
+  print(f'G7 EX9 - Stat: {stat}, Pval: {pval}')
+  print(f'Suppose we dont accept H0.')
+
+  new_pval = 0
+  for i in range(sims):
+    new_sample = [ scvar.normal_reject_method(est_mu, est_sigma) for _ in range(n) ]
+    new_sigma, new_mu = arr.sigma_and_mu(new_sample)
+    new_Fe = tests.empirical_dist(new_sample)
+    new_stat = tests.ks_statistic(new_sample, new_Fe, cdist.normal_CDF, new_mu, new_sigma**(1/2))
+    if new_stat > stat:
+      new_pval += 1
+
+  print(f'New pvalue calculated with {sims} new samples - Pval: {new_pval/sims}')
+
+def g7_ex10(): # P-Value Range Tests (Recursive, Aprox by Normal and Simulated)
+  print('G7 EX10')
   s1 = [ 65.2, 67.1, 69.4, 78.4, 74.0, 80.3 ]
   s2 = [ 59.4, 72.1, 68.0, 66.2, 58.5 ]
-  pval = tests.range_pvalue_test(s1, s2)
-  print(f'G7 EX10 - Pval: {pval}')
+
+  pval = tests.two_samples_recursive(s1, s2)
+  print(f'Recursive algorithm - Pval: {pval}')
+  pval = tests.two_samples_normal(s1, s2)
+  print(f'Aproximation with normal - Pval: {pval}')
+  pval = tests.two_samples_simulated(s1, s2, 10000)
+  print(f'Aproximation with 10000 simulations - Pval: {pval}')
 
 # Example 8.1, Cap 8, Page 3
 def example_8_1():
@@ -155,6 +179,7 @@ g7_ex5()
 g7_ex6()
 g7_ex7()
 g7_ex8()
+g7_ex9()
 g7_ex10()
 example_8_1()
 example_8_2()

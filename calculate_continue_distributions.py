@@ -1,4 +1,5 @@
 import scipy.special as sp
+import scipy.stats as ss
 import math
 
 # returns P(X = x) for a uniform distribution
@@ -39,3 +40,9 @@ def t_student_PDF(v, m, s, x):
   left = math.gamma((v + 1) / 2) / (math.gamma(v / 2) * (math.pi * v) * s)
   right = (1 + (1 / v) * ((x - m) / s)**2)**(-(v + 1) / 2)
   return left * right
+
+def normal_PDF(m, s, x):
+  return ss.norm.pdf(x, m, s)
+
+def normal_CDF(m, s, x):
+  return ss.norm.cdf(x, m, s)
