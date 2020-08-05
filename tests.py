@@ -114,8 +114,6 @@ def two_samples_simulated(l1, l2, sims):
   p1, p2, r = 0, 0, arr.ranges(l1, l2)
   for _ in range(sims):
     s = arr.ranges(l1, l2, shuffle=True)
-    if s < r:
-      p1 += 1
-    else:
-      p2 += 1
+    p1 += s < r
+    p2 += s >= r
   return 2 * min(p1, p2) / sims

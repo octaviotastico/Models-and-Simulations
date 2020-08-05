@@ -127,6 +127,18 @@ def g7_ex10(): # P-Value Range Tests (Recursive, Aprox by Normal and Simulated)
   pval = tests.two_samples_simulated(s1, s2, 10000)
   print(f'Aproximation with 10000 simulations - Pval: {pval}')
 
+def g7_ex11(): # P-Value Range Tests (Recursive, Aprox by Normal and Simulated)
+  print('G7 EX11')
+  s1 = [ 19, 31, 39, 45, 47, 66, 75 ]
+  s2 = [ 28, 36, 44, 49, 52, 72, 72 ]
+
+  pval = tests.two_samples_recursive(s1, s2)
+  print(f'Recursive algorithm - Pval: {pval}')
+  pval = tests.two_samples_normal(s1, s2)
+  print(f'Aproximation with normal - Pval: {pval}')
+  pval = tests.two_samples_simulated(s1, s2, 10000)
+  print(f'Aproximation with 10000 simulations - Pval: {pval}')
+
 # Example 8.1, Cap 8, Page 3
 def example_8_1():
   s = [
@@ -169,21 +181,22 @@ def example_8_3():
   stat, pval = tests.kolmogorov_smirnov(s, 10000, cdist.exponential_CDF, 1/100)
   print(f'Example 8.3, Cap. 8, Page 11 - Stat: {stat}, Pval: {pval}')
 
-g7_ex1()
-g7_ex2()
-g7_ex3_alt1()
-g7_ex3_alt2()
-g7_ex3_alt3()
-g7_ex4()
-g7_ex5()
-g7_ex6()
-g7_ex7()
-g7_ex8()
-g7_ex9()
-g7_ex10()
-example_8_1()
-example_8_2()
-example_8_3()
+# g7_ex1()
+# g7_ex2()
+# g7_ex3_alt1()
+# g7_ex3_alt2()
+# g7_ex3_alt3()
+# g7_ex4()
+# g7_ex5()
+# g7_ex6()
+# g7_ex7()
+# g7_ex8()
+# g7_ex9()
+# g7_ex10()
+g7_ex11()
+# example_8_1()
+# example_8_2()
+# example_8_3()
 
 
 

@@ -159,7 +159,7 @@ def frequency(list):
   return m
 
 # Returns range of two lists
-def ranges(l1, l2, repeated=False, shuffle=True):
+def ranges(l1, l2, repeated=False, shuffle=False):
   if shuffle:
     l3 = permutation(l1 + l2)
   else:
