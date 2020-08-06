@@ -100,6 +100,21 @@ def montecarlo_integral_0_inf(f, n):
 # Stops when completing minimum number of iterations,
 # and when the variance is smaller than some error we want.
 def sample_mean_and_variance_error(error, N, f, *params):
+  sample = [f(*params)] # Because some methods, returns 2 variables
+  mean, std = sample[0], 0
+  while len(sample) < N or (std / len(sample))**(1 / 2) > error:
+    prev_mean = mean
+    sample += [f(*params)]
+    mean = recursive_mu(mean, sample[-1], len(sample)) # Needs revision when sample increases in more than 1 variable per iteration
+    std = recursive_sigma(std, prev_mean, mean, len(sample))
+  return sample, mean, std
+
+# Calculates the mean of a distibution
+# generating random values and updating it.
+# This KEEPS the array of variables, and returns it.
+# Stops when completing minimum number of iterations
+# and variance is smaller than some error.
+def create_n_sample_variance_error(error, N, f, *params):
   mean = f(*params)
   variance, n = 0, 1
   while n <= N or (variance/n)**(1/2) > error:
@@ -114,15 +129,15 @@ def sample_mean_and_variance_error(error, N, f, *params):
 # Stops when completing minimum number of iterations,
 # and interval is smaller than some length we want.
 def sample_mean_and_variance_length(z_alfa_2, L, N, f, *params):
-  mean = f(*params)
-  variance, n = 0, 1
+  sample = [f(*params)]
+  mean, std = sample[0], 0
   length = L / (2 * z_alfa_2) # confianza (1-alfa)%
-  while n <= N or (variance/n)**(1/2) > length:
-    n += 1
+  while len(sample) <= N or (std/len(sample))**(1/2) > length:
     prev_mean = mean
-    mean += (f(*params) - mean) / n
-    variance = variance * (1 - 1/(n-1)) + n * (mean - prev_mean)**2
-  return mean, variance
+    sample += [f(*params)]
+    mean = recursive_mu(mean, sample[-1], len(sample))
+    std = recursive_sigma(std, prev_mean, mean, len(sample))
+  return sample, mean, std
 
 # Calculates the mean of a distribution
 # using the bootstrap method.
