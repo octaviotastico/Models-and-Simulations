@@ -203,7 +203,7 @@ def example_8_3():
 # g7_ex3_alt3()
 # g7_ex4()
 # g7_ex5()
-# g7_ex6()
+g7_ex6()
 # g7_ex7()
 # g7_ex8()
 # g7_ex9()

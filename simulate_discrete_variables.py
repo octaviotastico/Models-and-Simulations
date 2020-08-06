@@ -113,3 +113,37 @@ def urn(px):
 
   pos = sdvar.uniform(0, digits - 1)
   return urn_array[pos]
+
+# Given two different distributions generate one of them
+def composition(generate_x, generate_y, alpha):
+  u = np.random.uniform(0, 1)
+  if u < alpha:
+    return generate_x()
+  return generate_y()
+
+# Given n different distributions generate one of them
+def n_composition(alphas, generate_vars):
+  # For better performance, reorder the probabilities
+  # of each distribution of being generated, and then
+  # generate them when u (the uniform) is lower than the
+  # cummulative of the alphas.
+  alphas, generate_vars = (list(t) for t in zip(*sorted(zip(alphas, generate_vars), reverse=True)))
+  alphas = np.cumsum(alphas)
+  u = np.random.uniform(0, 1)
+  for i in range(len(alphas)):
+    if u < alphas[i]:
+      return generate_vars[i](), i
+
+# Given n different distributions returns their sum
+def n_sum(alphas, generate_vars):
+  sim_x = 0
+  for i in range(len(alphas)):
+    sim_x += generate_vars[i]() * alphas[i]
+  return sim_x
+
+# Given n different distributions returns their prod
+def n_prod(alphas, generate_vars):
+  sim_x = 0
+  for i in range(len(alphas)):
+    sim_x *= generate_vars[i]() * alphas[i]
+  return sim_x
