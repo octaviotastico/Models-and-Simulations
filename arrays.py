@@ -128,16 +128,25 @@ def create_n_sample_variance_error(error, N, f, *params):
 # generating random values and updating it.
 # Stops when completing minimum number of iterations,
 # and interval is smaller than some length we want.
-def sample_mean_and_variance_length(z_alfa_2, L, N, f, *params):
+def sample_mean_and_variance_length(z_alfa_2, L, N, f, *params, keep_sample=False):
   sample = [f(*params)]
-  mean, std = sample[0], 0
+  mean, std, n = sample[0], 0, 1
   length = L / (2 * z_alfa_2) # confianza (1-alfa)%
-  while len(sample) <= N or (std/len(sample))**(1/2) > length:
-    prev_mean = mean
-    sample += [f(*params)]
-    mean = recursive_mu(mean, sample[-1], len(sample))
-    std = recursive_sigma(std, prev_mean, mean, len(sample))
-  return sample, mean, std
+  while n <= N or (std/n)**(1/2) > length:
+    prev_mean, n = mean, n + 1
+    if keep_sample:
+      sample += [f(*params)]
+    else:
+      sample = [f(*params)]
+    mean = recursive_mu(mean, sample[-1], n)
+    std = recursive_sigma(std, prev_mean, mean, n)
+  interval = (
+    mean - z_alfa_2 * (std/n)**(1/2),
+    mean + z_alfa_2 * (std/n)**(1/2)
+  )
+  if keep_sample:
+    return sample, interval, mean, std
+  return interval, mean, std
 
 # Calculates the mean of a distribution
 # using the bootstrap method.
