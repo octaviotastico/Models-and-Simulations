@@ -30,10 +30,10 @@ def recursive_mu(prev_average, xn, n):
   return (prev_average * n + xn) / (n + 1)
 
 # Returns the variance of a given list.
-def sigma(list, sample=False):
+def sigma(s, sample=False):
   sigma = 0
-  mean = mu(list)
-  for elem in list:
+  mean = mu(s)
+  for elem in s:
     sigma += (elem - mean)**(2)
   return sigma / (len(s) - (1 if sample else 0))
 

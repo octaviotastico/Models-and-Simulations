@@ -37,7 +37,6 @@ def normal_reject_method(mu, sigma):
 
 # Generates a normal variable
 # using the polar method
-# (2 iterations aprox)
 def normal_polar_method(mu, sigma):
   radius_cuad = -2 * log(np.random.uniform(0, 1))
   theta = 2 * np.pi * np.random.uniform(0, 1)
