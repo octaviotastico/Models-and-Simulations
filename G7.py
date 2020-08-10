@@ -61,7 +61,7 @@ def g7_ex5(): # Pearson Chi2 Test
   s = [ 6, 7, 3, 4, 7, 3, 7, 2, 6, 3, 7, 8, 2, 1, 3, 5, 8, 7 ]
   x = [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]
   estimated_p = arr.mu(s) / 8
-  p = [ ddist.binomial_PDF(8, estimated_p, i) for i in range(9) ]
+  p = [ ddist.binomial_PDF(8, estimated_p, i) for i in range(len(x)) ]
   stat, pval = tests.pearson_chi_squared_test(x, p, n, s=s, unknown_params=1)
   print(f'G7 EX5 - Stat: {stat}, Pval: {pval}')
 
@@ -202,8 +202,8 @@ def example_8_3():
 # g7_ex3_alt2()
 # g7_ex3_alt3()
 # g7_ex4()
-# g7_ex5()
-g7_ex6()
+g7_ex5()
+# g7_ex6()
 # g7_ex7()
 # g7_ex8()
 # g7_ex9()

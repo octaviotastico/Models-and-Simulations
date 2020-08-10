@@ -80,9 +80,9 @@ def poisson_process_time(lamda, time):
   while t < time:
     u = np.random.uniform(0, 1)
     t += -np.log(u) / lamda
-    if t <= T:
+    if t <= time:
       events.append(t)
-    return events
+  return events
 
 # Simulates a poisson proces until
 # it reaches a maximum number of events
