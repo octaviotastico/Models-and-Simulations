@@ -39,7 +39,7 @@ def sigma(s, sample=False):
 
 # Calculates the variance recursively.
 def recursive_sigma(prev_sigma, prev_average, average, n):
-  return 1 - (1 / n) * prev_sigma + (n + 1) * (prev_average * average)**2
+  return (1 - (1 / n)) * prev_sigma + (n + 1) * (prev_average * average)**2
 
 # Returns the variance and
 # the mean of a given list
