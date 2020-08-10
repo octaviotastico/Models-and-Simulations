@@ -59,9 +59,9 @@ def g7_ex4(): # Kolmogorov-Smirnov Test
 def g7_ex5(): # Pearson Chi2 Test
   n = 18
   s = [ 6, 7, 3, 4, 7, 3, 7, 2, 6, 3, 7, 8, 2, 1, 3, 5, 8, 7 ]
-  x = [ 1, 2, 3, 4, 5, 6, 7, 8 ]
+  x = [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]
   estimated_p = arr.mu(s) / 8
-  p = [ ddist.binomial_PDF(8, estimated_p, i) for i in range(8) ]
+  p = [ ddist.binomial_PDF(8, estimated_p, i) for i in range(9) ]
   stat, pval = tests.pearson_chi_squared_test(x, p, n, s=s, unknown_params=1)
   print(f'G7 EX5 - Stat: {stat}, Pval: {pval}')
 
